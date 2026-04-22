@@ -13,7 +13,7 @@ public class ParkingService {
     private ParkingRepository repository;
     private PricingStrategy pricingStrategy;
 
-    private AtomicInteger ticketCounter = new AtomicInteger(1);
+    private static final AtomicInteger ticketCounter = new AtomicInteger(1);
 
     public ParkingService(ParkingRepository repository, PricingStrategy pricingStrategy) {
         this.repository = repository;
