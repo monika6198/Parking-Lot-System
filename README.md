@@ -20,6 +20,63 @@ It demonstrates:
 
 ---
 
+🚗 Parking Lot System – Low Level Design (LLD)
+classDiagram
+
+class Vehicle {
+  +String number
+  +VehicleType type
+}
+
+class ParkingSlot {
+  +int id
+  +SlotType type
+  +int floorNumber
+}
+
+class Floor {
+  +int floorNumber
+  +Map~SlotType, Queue~ParkingSlot~~ freeSlots
+  +allocateSlot()
+  +freeSlot()
+}
+
+class Ticket {
+  +int id
+  +Vehicle vehicle
+  +ParkingSlot slot
+  +LocalDateTime entryTime
+}
+
+class ParkingRepository {
+  +Map~Integer, Floor~ floors
+  +Map~Integer, Ticket~ tickets
+  +saveTicket()
+  +removeAndGetTicket()
+}
+
+class ParkingService {
+  +parkVehicle()
+  +unparkVehicle()
+}
+
+class SlotAllocationStrategy {
+  +allocateSlot()
+}
+
+class PricingStrategy {
+  +calculateFee()
+}
+
+Vehicle --> Ticket
+ParkingSlot --> Ticket
+Floor --> ParkingSlot
+ParkingRepository --> Floor
+ParkingRepository --> Ticket
+ParkingService --> ParkingRepository
+ParkingService --> SlotAllocationStrategy
+ParkingService --> PricingStrategy
+
 ## 🚀 Features
 
 * 🏢 Multi-floor parking lot
