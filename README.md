@@ -20,7 +20,9 @@ It demonstrates:
 
 ---
 
-🚗 Parking Lot System – Low Level Design (LLD)
+## 🚗 Parking Lot System – Low Level Design (LLD)
+
+```mermaid id="parking_lld_01"
 classDiagram
 
 class Vehicle {
@@ -76,6 +78,101 @@ ParkingRepository --> Ticket
 ParkingService --> ParkingRepository
 ParkingService --> SlotAllocationStrategy
 ParkingService --> PricingStrategy
+```
+
+---
+
+## 🧠 Design Explanation
+
+### 🔹 Flow
+
+```id="flow_parking"
+Vehicle → ParkingService → Floor → Slot Allocation → Ticket
+                                     ↓
+                                Repository
+```
+
+---
+
+### 🔹 Key Components
+
+* **Floor**
+
+  * Maintains slots grouped by type
+  * Uses `Map<SlotType, Queue<ParkingSlot>>`
+  * Handles allocation + freeing
+  * Thread-safe using locks
+
+---
+
+* **ParkingRepository**
+
+  * Stores floors and active tickets
+  * Uses `ConcurrentHashMap`
+
+---
+
+* **ParkingService**
+
+  * Orchestrates parking/unparking
+  * Uses strategies for allocation + pricing
+
+---
+
+* **Ticket**
+
+  * Snapshot of parking event
+  * Contains entry time for billing
+
+---
+
+## 🔒 Concurrency Design
+
+| Component       | Approach          |
+| --------------- | ----------------- |
+| Slot Allocation | Lock per Floor    |
+| Ticket Storage  | ConcurrentHashMap |
+| Ticket ID       | AtomicInteger     |
+| Allocation      | Queue (O(1))      |
+
+---
+
+## 🧠 Design Patterns Used
+
+### ✅ Strategy Pattern
+
+* Slot allocation
+* Pricing
+
+---
+
+### ✅ Repository Pattern
+
+* Abstract storage layer
+
+---
+
+## 🔥 Key Design Decisions
+
+* **Queue-based allocation**
+  → O(1) slot assignment (no scanning)
+
+* **Floor-level locking**
+  → better scalability than global lock
+
+* **Map-based grouping**
+  → efficient lookup by slot type
+
+* **Ticket snapshot**
+  → avoids recomputation issues
+
+---
+
+## 🎯 Interview Explanation (Use this)
+
+> “Each floor maintains available slots grouped by type using queues for O(1) allocation. I added floor-level locking for thread safety, and used strategy patterns for slot allocation and pricing to keep the system extensible.”
+
+---
 
 ## 🚀 Features
 
